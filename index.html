@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krusa VPN — Подключение</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d1117;
+    --surface:   #161b22;
+    --border:    #21262d;
+    --accent:    #58a6ff;
+    --green:     #3fb950;
+    --text:      #e6edf3;
+    --muted:     #8b949e;
+    --radius:    12px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 10px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .header-actions { display: flex; gap: 8px; }
+
+  .icon-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color .2s, border-color .2s;
+    text-decoration: none;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  main {
+    width: 100%;
+    max-width: 680px;
+    padding: 8px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── No sub warning ── */
+  #no-sub {
+    display: none;
+    background: rgba(248,81,73,.08);
+    border: 1px solid rgba(248,81,73,.3);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: #f85149;
+    font-size: 14px;
+  }
+
+  /* ── Big Happ CTA ── */
+  .happ-card {
+    background: linear-gradient(135deg, #1a2332 0%, #162032 100%);
+    border: 1px solid #2d4a6e;
+    border-radius: var(--radius);
+    padding: 22px 20px;
+  }
+
+  .happ-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .happ-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: #0d1f33;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .happ-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .happ-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .badge-recommended {
+    display: inline-block;
+    background: rgba(88,166,255,.15);
+    border: 1px solid rgba(88,166,255,.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .happ-platforms {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .platform-badge {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 10px;
+  }
+
+  .btn-happ {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #0d1117;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+    text-decoration: none;
+  }
+  .btn-happ:active { transform: scale(.98); }
+  .btn-happ:hover { opacity: .88; }
+
+  .btn-happ-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1.5px solid #2d4a6e;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-happ-download:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── Other apps section ── */
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 4px 0 2px;
+  }
+
+  .apps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .app-card:hover { border-color: #444c56; }
+
+  .app-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .app-card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: #0d1117;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .app-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .app-card-os {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .btn-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity .2s;
+    text-decoration: none;
+  }
+  .btn-small:hover { opacity: .85; }
+
+  .btn-small-primary {
+    background: rgba(63,185,80,.15);
+    border: 1px solid rgba(63,185,80,.3);
+    color: var(--green);
+  }
+
+  .btn-small-secondary {
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* ── Manual section ── */
+  .manual-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .manual-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(88,166,255,.1);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .manual-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .manual-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .sub-url-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-family: monospace;
+    word-break: break-all;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .sub-url-box:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-size: 13.5px;
+    color: var(--text);
+    transition: transform .3s;
+    z-index: 99;
+    white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .apps-grid { grid-template-columns: 1fr; }
+    header, main { padding-left: 14px; padding-right: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+      <path d="M2 17l10 5 10-5"/>
+      <path d="M2 12l10 5 10-5"/>
+    </svg>
+    Krusa VPN
+  </a>
+  <div class="header-actions">
+    <button class="icon-btn" id="copy-sub-btn" title="Скопировать ссылку подписки">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+    </button>
+    <a class="icon-btn" href="https://t.me/sam_krusa" target="_blank" title="Поддержка">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.504-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+      </svg>
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <div id="no-sub">⚠️ Ссылка подписки не найдена. Вернитесь в бота и нажмите «Подключить устройство» снова.</div>
+
+  <!-- ── Happ (рекомендуемое) ── -->
+  <div class="happ-card">
+    <div class="happ-header">
+      <div class="happ-icon">⚡</div>
+      <div>
+        <div class="happ-title">
+          Happ
+          <span class="badge-recommended">Рекомендуем</span>
+        </div>
+        <div class="happ-sub">Лучший VPN-клиент для подписок</div>
+      </div>
+    </div>
+
+    <div class="happ-platforms">
+      <span class="platform-badge">📱 Android</span>
+      <span class="platform-badge">🍎 iOS</span>
+      <span class="platform-badge">🖥 Windows</span>
+      <span class="platform-badge">🍏 macOS</span>
+      <span class="platform-badge">📺 Android TV</span>
+    </div>
+
+    <button class="btn-happ" onclick="addHapp()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Добавить подписку в Happ
+    </button>
+
+    <a class="btn-happ-download" href="https://happ.su" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Скачать Happ (happ.su)
+    </a>
+  </div>
+
+  <!-- ── Другие приложения ── -->
+  <div class="section-label">Другие приложения</div>
+
+  <div class="apps-grid">
+
+    <!-- v2rayNG -->
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-card-icon">🤖</div>
+        <div>
+          <div class="app-card-name">v2rayNG</div>
+          <div class="app-card-os">Android</div>
+        </div>
+      </div>
+      <button class="btn-small btn-small-primary" onclick="addApp('v2rayng://install-sub/url=')">
+        ＋ Добавить подписку
+      </button>
+      <a class="btn-small btn-small-secondary" href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank">
+        ↓ Google Play
+      </a>
+    </div>
+
+    <!-- Streisand -->
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-card-icon">🍎</div>
+        <div>
+          <div class="app-card-name">Streisand</div>
+          <div class="app-card-os">iOS / macOS</div>
+        </div>
+      </div>
+      <button class="btn-small btn-small-primary" onclick="addApp('streisand://import/')">
+        ＋ Добавить подписку
+      </button>
+      <a class="btn-small btn-small-secondary" href="https://apps.apple.com/app/streisand/id6450534064" target="_blank">
+        ↓ App Store
+      </a>
+    </div>
+
+    <!-- V2Box -->
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-card-icon">📦</div>
+        <div>
+          <div class="app-card-name">V2Box</div>
+          <div class="app-card-os">iOS / macOS</div>
+        </div>
+      </div>
+      <button class="btn-small btn-small-primary" onclick="addApp('v2box://install-sub?url=')">
+        ＋ Добавить подписку
+      </button>
+      <a class="btn-small btn-small-secondary" href="https://apps.apple.com/app/v2box-v2ray-client/id6446814690" target="_blank">
+        ↓ App Store
+      </a>
+    </div>
+
+    <!-- Hiddify -->
+    <div class="app-card">
+      <div class="app-card-header">
+        <div class="app-card-icon">🔒</div>
+        <div>
+          <div class="app-card-name">Hiddify</div>
+          <div class="app-card-os">Windows / macOS</div>
+        </div>
+      </div>
+      <button class="btn-small btn-small-primary" onclick="addApp('hiddify://import/')">
+        ＋ Добавить подписку
+      </button>
+      <a class="btn-small btn-small-secondary" href="https://github.com/hiddify/hiddify-next/releases/latest" target="_blank">
+        ↓ GitHub
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ── Ручное добавление ── -->
+  <div class="manual-card">
+    <div class="manual-icon">🔗</div>
+    <div style="flex:1">
+      <div class="manual-title">Ссылка подписки (вручную)</div>
+      <div class="manual-desc">Если кнопки выше не сработали — скопируйте ссылку и вставьте в приложение вручную.</div>
+      <div class="sub-url-box" id="sub-url-display" onclick="copySubUrl()">Загрузка...</div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast">✅ Ссылка скопирована</div>
+
+<script>
+let subURL = "";
+
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  subURL = params.get("sub") || "";
+  const display = document.getElementById("sub-url-display");
+  if (!subURL) {
+    document.getElementById("no-sub").style.display = "block";
+    display.textContent = "Ссылка не найдена";
+  } else {
+    display.textContent = subURL;
+  }
+})();
+
+function addHapp() {
+  if (!subURL) { showToast("⚠️ Нет ссылки подписки"); return; }
+  const scheme = "hiddify://import/";
+  window.location.href = scheme + encodeURIComponent(subURL);
+  setTimeout(() => {
+    copyToClipboard(subURL);
+    showToast("📋 Ссылка скопирована — вставьте в Happ вручную");
+  }, 1500);
+}
+
+function addApp(scheme) {
+  if (!subURL) { showToast("⚠️ Нет ссылки подписки"); return; }
+  window.location.href = scheme + encodeURIComponent(subURL);
+  setTimeout(() => {
+    copyToClipboard(subURL);
+    showToast("📋 Ссылка скопирована — вставьте вручную");
+  }, 1500);
+}
+
+function copySubUrl() {
+  if (!subURL) return;
+  copyToClipboard(subURL);
+  showToast("✅ Ссылка скопирована");
+}
+
+document.getElementById("copy-sub-btn").addEventListener("click", () => {
+  if (!subURL) { showToast("⚠️ Нет ссылки подписки"); return; }
+  copyToClipboard(subURL);
+  showToast("✅ Ссылка скопирована");
+});
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+  } else { legacyCopy(text); }
+}
+
+function legacyCopy(text) {
+  const el = document.createElement("textarea");
+  el.value = text;
+  el.style.cssText = "position:fixed;opacity:0";
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand("copy");
+  document.body.removeChild(el);
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+}
+</script>
+</body>
+</html>
